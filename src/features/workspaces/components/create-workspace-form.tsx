@@ -21,6 +21,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { ImageIcon, Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
@@ -31,6 +32,7 @@ const MAX_FILE_SIZE = 1024 * 1024; // 1MB in bytes
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof createWorkSpaceSchema>>({
     resolver: zodResolver(createWorkSpaceSchema),
@@ -50,14 +52,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           toast.success("Workspace created successfully!");
           form.reset();
           setImagePreview(null);
-          //TODO: redirect to new workspace
+          router.push(`/workspaces/${data.$id}`);
         },
-        onError: (error) => {
-          toast.error(`Failed to create workspace. Please try again`);
+        onError: () => {
+          toast.error(`Failed to create workspace. Please try again}`);
         },
       }
     );
