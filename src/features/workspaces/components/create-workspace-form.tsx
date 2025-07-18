@@ -17,12 +17,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/use-create-workspace";
+import { useRef, useState } from "react";
+import Image from "next/image";
+import { ImageIcon, Upload, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
 }
 
+const MAX_FILE_SIZE = 1024 * 1024; // 1MB in bytes
+
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+
   const form = useForm<z.infer<typeof createWorkSpaceSchema>>({
     resolver: zodResolver(createWorkSpaceSchema),
     defaultValues: {
@@ -33,8 +42,92 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   const { mutate, isPending } = useCreateWorkspace();
 
   const onSubmit = (values: z.infer<typeof createWorkSpaceSchema>) => {
-    mutate({ json: values });
+    const finalValues = {
+      ...values,
+      image: values.image instanceof File ? values.image : "",
+    };
+
+    mutate(
+      { form: finalValues },
+      {
+        onSuccess: () => {
+          toast.success("Workspace created successfully!");
+          form.reset();
+          setImagePreview(null);
+          //TODO: redirect to new workspace
+        },
+        onError: (error) => {
+          toast.error(`Failed to create workspace. Please try again`);
+        },
+      }
+    );
   };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const validateFile = (file: File): boolean => {
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File size must be less than 1MB");
+      return false;
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/svg+xml",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Only JPG, PNG, SVG, and JPEG files are allowed");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && validateFile(file)) {
+      form.setValue("image", file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (validateFile(file)) {
+        form.setValue("image", file);
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+      }
+    }
+  };
+
+  const removeImage = () => {
+    form.setValue("image", undefined);
+    setImagePreview(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const currentImage = form.watch("image");
 
   return (
     <Card className="w-full h-full border-none shadow-none">
@@ -48,37 +141,128 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 
       <CardContent className="p-7">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Workspace Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Enter workspace name" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DottedSeparator className="py-7" />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Workspace Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Enter workspace name"
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <div className="flex items-center justify-between">
-                <Button
-                  type="button"
-                  size={"lg"}
-                  variant={"secondary"}
-                  onClick={onCancel}
-                  disabled={isPending}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" size={"lg"} disabled={isPending}>
-                  Create Workspace
-                </Button>
-              </div>
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Workspace Icon</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-6">
+                      {/* Image Preview - Circular */}
+                      <div className="relative flex-shrink-0">
+                        {imagePreview ||
+                        (currentImage && currentImage instanceof File) ? (
+                          <div className="size-24 relative rounded-full overflow-hidden group border-2 border-border">
+                            <Image
+                              src={
+                                imagePreview ||
+                                URL.createObjectURL(currentImage as File)
+                              }
+                              alt="Workspace icon"
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-white hover:bg-red-500 rounded-full"
+                                onClick={removeImage}
+                                disabled={isPending}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="size-24 rounded-full border-2 border-dashed border-muted-foreground/25 flex items-center justify-center bg-muted/20">
+                            <ImageIcon className="size-10 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Upload Area */}
+                      <div className="flex-1">
+                        <div
+                          className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                            dragActive
+                              ? "border-primary bg-primary/5"
+                              : "border-muted-foreground/25 hover:border-blue-500"
+                          }`}
+                          onDragEnter={handleDrag}
+                          onDragLeave={handleDrag}
+                          onDragOver={handleDrag}
+                          onDrop={handleDrop}
+                          onClick={() => inputRef.current?.click()}
+                        >
+                          <Upload className="size-8 mx-auto text-muted-foreground mb-2" />
+                          <p className="text-sm font-medium mb-1">
+                            Click to upload or drag and drop
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            JPG, PNG, SVG OR JPEG, MAX 1MB
+                          </p>
+                        </div>
+
+                        <input
+                          className="hidden"
+                          accept=".jpg,.png,.jpeg,.svg"
+                          type="file"
+                          ref={inputRef}
+                          disabled={isPending}
+                          onChange={handleImageChange}
+                        />
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DottedSeparator className="py-7" />
+
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                size="lg"
+                variant="secondary"
+                onClick={onCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" size="lg" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Workspace"
+                )}
+              </Button>
             </div>
           </form>
         </Form>
