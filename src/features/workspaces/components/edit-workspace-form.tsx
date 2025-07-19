@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createWorkspaceSchema } from "../schemas";
+import { updateWorkspaceSchema } from "../schemas";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
@@ -16,51 +16,67 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCreateWorkspace } from "../api/use-create-workspace";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { ImageIcon, Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { Workspace } from "../types";
+import { useUpdateWorkspace } from "../api/use-update-workspace";
 
-interface CreateWorkspaceFormProps {
+interface EditWorkspaceFormProps {
   onCancel?: () => void;
+  initialValues: Workspace;
 }
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB in bytes
 
-export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+export const EditWorkspaceForm = ({
+  onCancel,
+  initialValues,
+}: EditWorkspaceFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof createWorkspaceSchema>>({
-    resolver: zodResolver(createWorkspaceSchema),
+  const [imageRemoved, setImageRemoved] = useState(false);
+
+  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
+    resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
-      name: "",
+      ...initialValues,
+      image: initialValues.imageUrl ?? "",
     },
   });
 
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useUpdateWorkspace();
 
-  const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
+  const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...values,
-      image: values.image instanceof File ? values.image : "",
+      image:
+        values.image instanceof File
+          ? values.image
+          : imageRemoved
+          ? ""
+          : initialValues.imageUrl ?? "",
     };
 
+    console.log(finalValues);
+
     mutate(
-      { form: finalValues },
+      { form: finalValues, param: { workspaceId: initialValues.$id } },
       {
         onSuccess: ({ data }) => {
-          toast.success("Workspace created successfully!");
+          toast.success("Workspace updated successfully!");
           form.reset();
           setImagePreview(null);
+          setImageRemoved(false);
           router.push(`/workspaces/${data.$id}`);
         },
         onError: () => {
-          toast.error(`Failed to create workspace. Please try again}`);
+          toast.error("Failed to update workspace. Please try again.");
         },
       }
     );
@@ -94,6 +110,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       form.setValue("image", file);
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
+      setImageRemoved(false);
     }
   };
 
@@ -118,25 +135,31 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
         form.setValue("image", file);
         const previewUrl = URL.createObjectURL(file);
         setImagePreview(previewUrl);
+        setImageRemoved(false);
       }
     }
   };
 
-  const removeImage = () => {
-    form.setValue("image", undefined);
+  const handleRemoveImage = () => {
+    form.setValue("image", "");
     setImagePreview(null);
+    setImageRemoved(true);
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   };
 
   const currentImage = form.watch("image");
+  const hasInitialImage =
+    initialValues.imageUrl &&
+    !imagePreview &&
+    !(currentImage instanceof File) &&
+    !imageRemoved;
+  const hasNewImage = imagePreview || currentImage instanceof File;
 
   return (
     <Card className="w-full h-full border-none shadow-none">
-      <CardHeader className="text-xl font-bold">
-        Create a new workspace
-      </CardHeader>
+      <CardHeader className="text-xl font-bold">Edit workspace</CardHeader>
 
       <div className="px-7">
         <DottedSeparator />
@@ -173,13 +196,14 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                     <div className="flex items-center gap-6">
                       {/* Image Preview - Circular */}
                       <div className="relative flex-shrink-0">
-                        {imagePreview ||
-                        (currentImage && currentImage instanceof File) ? (
+                        {hasNewImage || hasInitialImage ? (
                           <div className="size-24 relative rounded-full overflow-hidden group border-2 border-border">
                             <Image
                               src={
                                 imagePreview ||
-                                URL.createObjectURL(currentImage as File)
+                                (currentImage instanceof File
+                                  ? URL.createObjectURL(currentImage)
+                                  : initialValues.imageUrl || "")
                               }
                               alt="Workspace icon"
                               fill
@@ -191,7 +215,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                                 variant="ghost"
                                 size="sm"
                                 className="h-8 w-8 p-0 text-white hover:bg-red-500 rounded-full"
-                                onClick={removeImage}
+                                onClick={handleRemoveImage}
                                 disabled={isPending}
                               >
                                 <X className="h-4 w-4" />
@@ -261,10 +285,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    Updating...
                   </>
                 ) : (
-                  "Create Workspace"
+                  "Update Workspace"
                 )}
               </Button>
             </div>
