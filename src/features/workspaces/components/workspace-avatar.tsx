@@ -16,7 +16,10 @@ export const WorkspaceAvatar = ({
   if (image) {
     return (
       <div
-        className={cn("size-10 relative rounded-md overflow-hidden", className)}
+        className={cn(
+          "bg-blue-100 font-medium text-blue-600 flex items-center justify-center w-full h-full rounded-md ",
+          className
+        )}
       >
         <Image src={image} alt={name} fill className="object-cover" />
       </div>
