@@ -30,14 +30,17 @@ export const DottedSeparator = ({
         className
       )}
     >
-      <div className={cn(isHorizontal ? "flex-grow" : "flex-grow-0",
+      <div
+        className={cn(isHorizontal ? "flex-grow" : "flex-grow-0")}
         style={{
-            width: isHorizontal ? "100%" : height,
-            height: isHorizontal ? height : "100%",
-            backgroundImage: `radial-gradient(circle, ${color} 25%, trasnparent 25%)`
-            backgroundSize: isHorizontal ? `${parseInt(dotSize)} + (gapSize)`
+          width: isHorizontal ? "100%" : height,
+          height: isHorizontal ? height : "100%",
+          backgroundImage: `radial-gradient(circle, ${color} 25%, transparent 25%)`,
+          backgroundSize: isHorizontal
+            ? `${parseInt(dotSize)}px ${parseInt(gapSize)}px`
+            : `${parseInt(dotSize)}px ${parseInt(gapSize)}px`,
         }}
-      )}></div>
+      ></div>
     </div>
   );
 };

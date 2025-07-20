@@ -2,22 +2,24 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import Image from "next/image";
 
-interface WorkspaceAvatarProps {
+interface ProjectAvatarProps {
   image?: string;
   name: string;
   className?: string;
+  fallbackClassname?: string;
 }
 
-export const WorkspaceAvatar = ({
+export const ProjectAvatar = ({
   image,
   name,
   className,
-}: WorkspaceAvatarProps) => {
+  fallbackClassname,
+}: ProjectAvatarProps) => {
   if (image) {
     return (
       <div
         className={cn(
-          "size-8 sm:size-10 rounded-md relative overflow-hidden flex-shrink-0",
+          "size-4 sm:size-5 rounded-md relative overflow-hidden flex-shrink-0",
           className
         )}
       >
@@ -33,9 +35,14 @@ export const WorkspaceAvatar = ({
 
   return (
     <Avatar
-      className={cn("size-4 sm:size-6 rounded-md flex-shrink-0", className)}
+      className={cn("size-4 sm:size-5 rounded-md flex-shrink-0", className)}
     >
-      <AvatarFallback className="text-white bg-blue-600 font-semibold text-base sm:text-lg uppercase rounded-md flex items-center justify-center size-full">
+      <AvatarFallback
+        className={cn(
+          "text-white bg-blue-600 font-semibold text-xs sm:text-sm uppercase rounded-md flex items-center justify-center size-full",
+          fallbackClassname
+        )}
+      >
         {name[0]}
       </AvatarFallback>
     </Avatar>
