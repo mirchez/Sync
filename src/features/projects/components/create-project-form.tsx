@@ -56,9 +56,9 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset();
-          //TODO: redirect to project screen
+          router.push(`workspaces/${workspaceId}/projects/${data.$id}`);
         },
         onError: () => {
           toast.error(`Failed to create project. Please try again}`);
