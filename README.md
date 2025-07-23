@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sync Workspace
+
+Sync is a modern, collaborative workspace management platform built with Next.js and Appwrite. It enables teams and individuals to organize their work into workspaces, projects, and tasks, with real-time collaboration, role-based access, and multiple task views (table, kanban, calendar).
+
+## Live Demo
+
+Check out the live app here: [https://sync-theta-five.vercel.app/sign-in](https://sync-theta-five.vercel.app/sign-in)
+
+## Features
+
+- **Authentication**: Secure sign up, login, and logout with email/password and OAuth (Google, GitHub).
+- **Workspace Management**: Create, edit, and join workspaces. Invite others via unique codes.
+- **Project Management**: Organize workspaces into projects, each with its own details and image.
+- **Task Management**: Create, assign, and track tasks with statuses (Backlog, Todo, In Progress, In Review, Done), due dates, and descriptions.
+- **Multiple Task Views**: Switch between table, kanban board, and calendar views for tasks.
+- **Collaboration**: Add members to workspaces with roles (Admin, Member).
+- **Analytics**: View analytics for workspaces and projects.
+- **Responsive UI**: Clean, modern, and mobile-friendly interface.
+
+## Tech Stack
+
+- **Frontend**: [Next.js](https://nextjs.org/), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/)
+- **Backend/API**: [Appwrite](https://appwrite.io/) (via node-appwrite), [Hono](https://hono.dev/) for API routing
+- **State/Data**: [React Query](https://tanstack.com/query/latest)
+- **Forms/Validation**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/)
+- **UI Components**: Radix UI, Lucide Icons, custom components
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   pnpm install
+   # or
+   npm install
+   # or
+   yarn install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   - Copy `.env.example` to `.env.local` and fill in your Appwrite credentials (database, project, bucket IDs, etc.).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Run the development server:**
 
-## Learn More
+   ```bash
+   pnpm dev
+   # or
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Open your browser:**
+   Visit [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Authentication
 
-## Deploy on Vercel
+- Sign up or log in with email/password or OAuth (Google, GitHub).
+- Session is managed via secure cookies.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Workspaces
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Create a workspace (optionally upload an image).
+- Join existing workspaces via invite code.
+- Switch between workspaces using the sidebar.
+
+### Projects
+
+- Create projects within a workspace (optionally upload an image).
+- Edit or delete projects as needed.
+
+### Tasks
+
+- Create tasks within projects, assign to members, set due dates and descriptions.
+- Change task status (Backlog, Todo, In Progress, In Review, Done).
+- View tasks as a table, kanban board, or calendar.
+
+### Members
+
+- Invite members to a workspace.
+- Assign roles (Admin, Member).
+
+## Folder Structure
+
+- `src/app/` — Next.js app directory (routing, layouts, pages)
+- `src/features/` — Main business logic (auth, workspaces, projects, tasks, members)
+- `src/components/` — Shared UI components
+- `src/lib/` — Utilities and API clients
+- `public/` — Static assets (logo, images)
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+[MIT](LICENSE) (add a LICENSE file if you want to specify this)
