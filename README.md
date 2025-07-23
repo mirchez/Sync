@@ -91,10 +91,3 @@ Check out the live app here: [https://sync-theta-five.vercel.app/sign-in](https:
 - `src/lib/` — Utilities and API clients
 - `public/` — Static assets (logo, images)
 
-## Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-[MIT](LICENSE) (add a LICENSE file if you want to specify this)
