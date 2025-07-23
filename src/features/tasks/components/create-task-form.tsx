@@ -46,10 +46,16 @@ export const CreateTaskForm = ({
 }: CreateTaskFormProps) => {
   const workspaceId = useWorkspaceId();
 
-  const form = useForm<z.infer<typeof createTaskSchema>>({
+  const form = useForm({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
       workspaceId,
+      dueDate: undefined,
+      name: "",
+      status: TaskStatus.BACKLOG,
+      projectId: projectOptions[0]?.id || "",
+      assigneeId: memberOptions[0]?.id || "",
+      description: "",
     },
   });
 
@@ -103,7 +109,17 @@ export const CreateTaskForm = ({
                 <FormItem>
                   <FormLabel>Due Date</FormLabel>
                   <FormControl>
-                    <DatePicker {...field} />
+                    <DatePicker
+                      {...field}
+                      value={
+                        typeof field.value === "string" ||
+                        typeof field.value === "number"
+                          ? new Date(field.value)
+                          : field.value instanceof Date
+                          ? field.value
+                          : undefined
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

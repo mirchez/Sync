@@ -168,7 +168,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
             <FormField
               control={form.control}
               name="image"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Project Icon</FormLabel>
                   <FormControl>

@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { loginSchema } from "../schemas";
 import { useLogin } from "@/features/api/use-login";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 export const SignInCard = () => {
   const { mutate, isPending } = useLogin();
@@ -94,6 +95,7 @@ export const SignInCard = () => {
 
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
+          onClick={() => signUpWithGoogle()}
           variant="outline"
           size="lg"
           className="w-full"
@@ -104,6 +106,7 @@ export const SignInCard = () => {
         </Button>
 
         <Button
+          onClick={() => signUpWithGithub()}
           variant="outline"
           size="lg"
           className="w-full"

@@ -268,7 +268,7 @@ export const EditWorkspaceForm = ({
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Workspace Icon</FormLabel>
                     <FormControl>

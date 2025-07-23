@@ -14,6 +14,7 @@ import { useJoinWorkspace } from "../api/use-join-workspace";
 import { useInviteCode } from "../hooks/use-inivte-code";
 import { useWorkspaceId } from "../hooks/use-workspace-id";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface JoinWorkspaceFormProps {
   initialValues: {
@@ -36,8 +37,12 @@ export const JoinWorkspaceForm = ({
         json: { code: inviteCode },
       },
       {
-        onSuccess: ({ data }) => {
-          router.push(`/workspaces/${data.$id}`);
+        onSuccess: (response) => {
+          if ("data" in response && response.data && "$id" in response.data) {
+            router.push(`/workspaces/${response.data.$id}`);
+          } else if ("error" in response) {
+            toast.error(response.error);
+          }
         },
       }
     );

@@ -1,7 +1,5 @@
 import { DATABASE_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config";
-import { Account, Client, Databases, Query } from "node-appwrite";
-import { getMember } from "../members/utils";
-import { Workspace } from "./types";
+import { Query } from "node-appwrite";
 import { createSessionClient } from "@/lib/appwrite";
 
 export const getWorkSpaces = async () => {

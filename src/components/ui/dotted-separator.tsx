@@ -19,8 +19,6 @@ export const DottedSeparator = ({
 }: DottedSeparatorProps) => {
   const isHorizontal = direction === "horizontal";
 
-  const dots = Array.from({ length: 30 });
-
   return (
     <div
       className={cn(

@@ -221,7 +221,7 @@ export const EditProjectForm = ({
               <FormField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormLabel>Project Icon</FormLabel>
                     <FormControl>

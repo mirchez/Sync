@@ -18,7 +18,6 @@ import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { formatDistanceToNow } from "date-fns";
 import { CalendarIcon, PlusIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
-import projects from "@/features/projects/server/route";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { Member } from "@/features/members/type";
 import { MemberAvatar } from "@/features/members/components/member-avatar";

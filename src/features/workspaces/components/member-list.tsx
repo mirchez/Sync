@@ -78,7 +78,7 @@ export const MemberList = () => {
         <CardContent className="p-0">
           {data?.documents && data.documents.length > 0 ? (
             <div className="divide-y divide-gray-100">
-              {data.documents.map((member, i) => (
+              {data.documents.map((member) => (
                 <div
                   key={member.$id}
                   className="p-6 hover:bg-gray-50 transition-colors"
@@ -87,7 +87,7 @@ export const MemberList = () => {
                     <div className="flex items-center gap-4">
                       <MemberAvatar
                         className="size-12"
-                        fallbackClassname="text-lg font-semibold bg-blue-100 text-blue-600"
+                        fallbackClassName="text-lg font-semibold bg-blue-100 text-blue-600"
                         name={member.name}
                       />
 

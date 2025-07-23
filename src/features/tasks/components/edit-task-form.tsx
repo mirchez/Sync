@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EditTaskFormValues, createTaskSchema } from "../schemas";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { z } from "zod";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/dotted-separator";
 import {
@@ -45,15 +44,16 @@ export const EditTaskForm = ({
   memberOptions,
   initialValues,
 }: EditTaskFormProps) => {
-  const form = useForm<z.infer<typeof createTaskSchema>>({
+  const form = useForm({
     resolver: zodResolver(
       createTaskSchema.omit({ workspaceId: true, description: true })
     ),
     defaultValues: {
-      ...initialValues,
-      dueDate: initialValues.dueDate
-        ? new Date(initialValues.dueDate)
-        : undefined,
+      name: "",
+      status: TaskStatus.BACKLOG,
+      projectId: projectOptions[0]?.id || "",
+      assigneeId: memberOptions[0]?.id || "",
+      dueDate: undefined,
     },
   });
 
@@ -108,7 +108,17 @@ export const EditTaskForm = ({
                 <FormItem>
                   <FormLabel>Due Date</FormLabel>
                   <FormControl>
-                    <DatePicker {...field} />
+                    <DatePicker
+                      {...field}
+                      value={
+                        typeof field.value === "string" ||
+                        typeof field.value === "number"
+                          ? new Date(field.value)
+                          : field.value instanceof Date
+                          ? field.value
+                          : undefined
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

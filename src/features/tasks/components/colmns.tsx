@@ -103,7 +103,7 @@ export const columns: ColumnDef<Task>[] = [
         <div className="flex items-center gap-x-2 text-sm font-medium">
           <MemberAvatar
             className="size-6"
-            fallbackClassname="text-xs"
+            fallbackClassName="text-xs"
             name={assignee.name || "Usuario"}
           />
           <p className="line-clamp-1">{assignee.name}</p>
