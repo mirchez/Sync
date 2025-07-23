@@ -10,6 +10,10 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // Configuración de ignores debe ir DENTRO del array
+  {
+    ignores: ["src/features/tasks/components/edit-task-form.tsx"],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 

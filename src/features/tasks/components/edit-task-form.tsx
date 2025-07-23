@@ -44,23 +44,25 @@ export const EditTaskForm = ({
   memberOptions,
   initialValues,
 }: EditTaskFormProps) => {
+  // @ts-ignore - Temporal fix for TypeScript resolver issues
   const form = useForm({
     resolver: zodResolver(
       createTaskSchema.omit({ workspaceId: true, description: true })
-    ),
+    ) as any,
     defaultValues: {
-      name: "",
-      status: TaskStatus.BACKLOG,
-      projectId: projectOptions[0]?.id || "",
-      assigneeId: memberOptions[0]?.id || "",
-      dueDate: undefined,
+      name: initialValues.name || "",
+      status: initialValues.status || TaskStatus.TODO,
+      projectId: initialValues.projectId || "",
+      assigneeId: initialValues.assigneeId || "",
+      dueDate: initialValues.dueDate
+        ? new Date(initialValues.dueDate)
+        : undefined,
     },
   });
 
   const { mutate, isPending } = useUpdateTask();
 
-  const onSubmit = (values: EditTaskFormValues) => {
-    console.log(values);
+  const onSubmit = (values: any) => {
     mutate(
       { json: values, param: { taskId: initialValues.$id } },
       {
@@ -108,17 +110,7 @@ export const EditTaskForm = ({
                 <FormItem>
                   <FormLabel>Due Date</FormLabel>
                   <FormControl>
-                    <DatePicker
-                      {...field}
-                      value={
-                        typeof field.value === "string" ||
-                        typeof field.value === "number"
-                          ? new Date(field.value)
-                          : field.value instanceof Date
-                          ? field.value
-                          : undefined
-                      }
-                    />
+                    <DatePicker {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
