@@ -2,7 +2,7 @@ import { client } from "@/lib/rpc";
 import { useQuery } from "@tanstack/react-query";
 import { InferResponseType } from "hono";
 
-interface UseGetPropjectAnalyticsProps {
+interface UseGetWorkspacetAnalyticsProps {
   workspaceId: string;
 }
 
@@ -11,9 +11,9 @@ export type WorkspaceAnalyticsResponseType = InferResponseType<
   200
 >;
 
-export const useGetWorkspacetAnalytics = ({
+export const useGetWorkspaceAnalytics = ({
   workspaceId,
-}: UseGetPropjectAnalyticsProps) => {
+}: UseGetWorkspacetAnalyticsProps) => {
   const query = useQuery({
     queryKey: ["workspace-analytics", workspaceId],
     queryFn: async () => {
