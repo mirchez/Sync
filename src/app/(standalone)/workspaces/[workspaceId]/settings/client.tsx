@@ -1,4 +1,4 @@
-"use client  ";
+"use client";
 
 import { PageError } from "@/components/page-error";
 import { PageLoader } from "@/components/page-loader";

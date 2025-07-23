@@ -3,28 +3,28 @@ import { useQuery } from "@tanstack/react-query";
 import { InferResponseType } from "hono";
 
 interface UseGetPropjectAnalyticsProps {
-  projectId: string;
+  workspaceId: string;
 }
 
-export type ProjectAnalyticsResponseType = InferResponseType<
-  (typeof client.api.projects)[":projectId"]["analytics"]["$get"],
+export type WorkspaceAnalyticsResponseType = InferResponseType<
+  (typeof client.api.workspaces)[":workspaceId"]["analytics"]["$get"],
   200
 >;
 
-export const useGetProjectAnalytics = ({
-  projectId,
+export const useGetWorkspacetAnalytics = ({
+  workspaceId,
 }: UseGetPropjectAnalyticsProps) => {
   const query = useQuery({
-    queryKey: ["project-analytics", projectId],
+    queryKey: ["workspace-analytics", workspaceId],
     queryFn: async () => {
-      const response = await client.api.projects[":projectId"][
+      const response = await client.api.workspaces[":workspaceId"][
         "analytics"
       ].$get({
-        param: { projectId },
+        param: { workspaceId },
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch project analitycs");
+        throw new Error("Failed to fetch workspace analitycs");
       }
 
       const { data } = await response.json();
