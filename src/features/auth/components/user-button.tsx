@@ -10,8 +10,8 @@ import {
 import { DottedSeparator } from "@/components/dotted-separator";
 
 import { Loader, LogOut } from "lucide-react";
-import { useCurrent } from "@/features/api/use-current";
-import { useLogout } from "@/features/api/use-logout";
+import { useCurrent } from "@/features/auth/api/use-current";
+import { useLogout } from "@/features/auth/api/use-logout";
 
 export const UserButton = () => {
   const { mutate: logout } = useLogout();

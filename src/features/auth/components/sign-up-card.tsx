@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../schemas";
-import { useRegister } from "@/features/api/use-register";
+import { useRegister } from "@/features/auth/api/use-register";
 import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 export const SignUpCard = () => {

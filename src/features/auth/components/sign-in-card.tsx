@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import Link from "next/link";
 import { loginSchema } from "../schemas";
-import { useLogin } from "@/features/api/use-login";
+import { useLogin } from "@/features/auth/api/use-login";
 import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 export const SignInCard = () => {
