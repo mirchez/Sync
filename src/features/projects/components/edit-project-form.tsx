@@ -56,6 +56,15 @@ export const EditProjectForm = ({
 
   const { mutate, isPending } = useUpdateProject();
 
+  const { mutate: deleteProject, isPending: isDeletingProject } =
+    useDeleteProject();
+
+  const [DeleteDialog, confirmDelete] = useConfirm(
+    "Delete Project",
+    "This action cannot be undone",
+    "destructive"
+  );
+
   const onSubmit = (values: z.infer<typeof updateProjectSchema>) => {
     const finalValues = {
       ...values,
@@ -67,20 +76,7 @@ export const EditProjectForm = ({
           : initialValues.imageUrl ?? "",
     };
 
-    mutate(
-      { form: finalValues, param: { projectId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          toast.success("Project updated successfully!");
-
-          setImagePreview(null);
-          setImageRemoved(false);
-        },
-        onError: () => {
-          toast.error("Failed to update project. Please try again.");
-        },
-      }
-    );
+    mutate({ form: finalValues, param: { projectId: initialValues.$id } });
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -158,17 +154,6 @@ export const EditProjectForm = ({
     !imageRemoved;
   const hasNewImage = imagePreview || currentImage instanceof File;
 
-  //Deleting part
-
-  const { mutate: deleteProject, isPending: isDeletingProject } =
-    useDeleteProject();
-
-  const [DeleteDialog, confirmDelete] = useConfirm(
-    "Delete Project",
-    "This action cannot be undone",
-    "destructive"
-  );
-
   const handleDelete = async () => {
     const ok = await confirmDelete();
 
@@ -180,7 +165,7 @@ export const EditProjectForm = ({
       },
       {
         onSuccess: () => {
-          window.location.href = "/";
+          router.push("/");
         },
       }
     );

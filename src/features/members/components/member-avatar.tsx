@@ -4,11 +4,11 @@ import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 interface MemberAvatarProps {
   name: string;
   className?: string;
-  fallbackClassname?: string;
+  fallbackClassName?: string;
 }
 
 export const MemberAvatar = ({
-  fallbackClassname,
+  fallbackClassName,
   name,
   className,
 }: MemberAvatarProps) => {
@@ -19,7 +19,7 @@ export const MemberAvatar = ({
       <AvatarFallback
         className={cn(
           "bg-blue-100 font-medium text-blue-600 flex items-center justify-center w-full h-full rounded-full",
-          fallbackClassname
+          fallbackClassName
         )}
       >
         {name.charAt(0).toUpperCase()}

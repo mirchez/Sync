@@ -74,20 +74,7 @@ export const EditWorkspaceForm = ({
           : initialValues.imageUrl ?? "",
     };
 
-    mutate(
-      { form: finalValues, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          toast.success("Workspace updated successfully!");
-          form.reset();
-          setImagePreview(null);
-          setImageRemoved(false);
-        },
-        onError: () => {
-          toast.error("Failed to update workspace. Please try again.");
-        },
-      }
-    );
+    mutate({ form: finalValues, param: { workspaceId: initialValues.$id } });
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -227,7 +214,6 @@ export const EditWorkspaceForm = ({
       {
         onSuccess: () => {
           toast.success("Invite link reset successfully");
-          router.refresh();
         },
         onError: () => {
           toast.error("Failed to reset invite link. Please try again.");

@@ -24,7 +24,6 @@ export const Sidebar = () => {
               className="w-5 h-5 text-white"
             />
           </div>
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
         </div>
         <div className="flex flex-col">
           <span className="text-2xl font-black text-gray-900 tracking-tight leading-none">

@@ -38,9 +38,10 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
   const workspaceId = useWorkspaceId();
 
   const form = useForm<z.infer<typeof createProjectSchema>>({
-    resolver: zodResolver(createProjectSchema.omit({ workspaceId: true })),
+    resolver: zodResolver(createProjectSchema),
     defaultValues: {
       name: "",
+      workspaceId,
     },
   });
 
@@ -58,7 +59,7 @@ export const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
       {
         onSuccess: ({ data }) => {
           form.reset();
-          router.push(`workspaces/${workspaceId}/projects/${data.$id}`);
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
         },
         onError: () => {
           toast.error(`Failed to create project. Please try again}`);

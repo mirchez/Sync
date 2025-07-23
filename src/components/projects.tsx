@@ -13,6 +13,7 @@ export const Projects = () => {
   const workspaceId = useWorkspaceId();
   const { data } = useGetProjects({ workspaceId });
   const { open } = useCreateProjectModal();
+  const pathname = usePathname();
 
   return (
     <div className="flex flex-col space-y-2">
@@ -26,7 +27,6 @@ export const Projects = () => {
 
       <div className="flex flex-col space-y-1">
         {data?.documents.map((project) => {
-          const pathname = usePathname();
           const href = `/workspaces/${workspaceId}/projects/${project.$id}`;
           const isActive = pathname === href;
 
@@ -39,7 +39,7 @@ export const Projects = () => {
                     "bg-white shadow-sm hover:opacity-100 text-primary"
                 )}
               >
-                <div className="flex-shrink-0">
+                <div className="flex items-center gap-x-2">
                   <ProjectAvatar image={project.imageUrl} name={project.name} />
                 </div>
                 <span className="truncate text-sm sm:text-base min-w-0 flex-1">
