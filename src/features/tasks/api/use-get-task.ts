@@ -18,7 +18,6 @@ export const useGetTask = ({ taskId }: useGetTaskProps) => {
       }
 
       const { data } = await response.json();
-      console.log("DATA OF FILTER:  ", { data });
 
       return data;
     },

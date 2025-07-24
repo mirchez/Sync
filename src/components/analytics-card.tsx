@@ -1,6 +1,7 @@
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
+import { useRef, useEffect } from "react";
 
 interface AnalyticsCardProps {
   title: string;
@@ -21,7 +22,7 @@ export const AnalyticsCard = ({
   const Icon = variant === "up" ? FaCaretUp : FaCaretDown;
 
   return (
-    <Card className="shadow-none border-none w-full">
+    <Card className="shadow-none w-full min-w-[280px] flex-shrink-0 border border-gray-200 rounded-none first:rounded-l-lg last:rounded-r-lg border-r-0 last:border-r select-none">
       <CardHeader>
         <div className="flex items-center gap-x-2.5">
           <CardDescription className="flex items-center gap-x-2 font-medium overflow-hidden">
@@ -43,5 +44,46 @@ export const AnalyticsCard = ({
         <CardTitle className="3xl font-semibold">{value}</CardTitle>
       </CardHeader>
     </Card>
+  );
+};
+
+// Componente contenedor para las tarjetas
+export const AnalyticsCardsContainer = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Si hay scroll horizontal disponible, prevenir el scroll vertical y hacer scroll horizontal
+      if (container.scrollWidth > container.clientWidth) {
+        e.preventDefault();
+        container.scrollLeft += e.deltaY;
+      }
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full overflow-x-auto cursor-grab active:cursor-grabbing"
+      style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "#e5e7eb transparent",
+      }}
+    >
+      <div className="flex min-w-max pb-2">{children}</div>
+    </div>
   );
 };

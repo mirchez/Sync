@@ -46,8 +46,6 @@ export const useGetTasks = ({
       }
 
       const { data } = await response.json();
-      console.log("DATA OF FILTER:  ", { data });
-
       return data;
     },
   });
